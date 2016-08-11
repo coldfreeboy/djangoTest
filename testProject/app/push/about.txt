@@ -1,0 +1,90 @@
+1：基本文件上传
+    目录：
+    push
+    |------view.py
+                |---函数base()返回测试主面
+                ----函数ajax_base_file（）处理基本上传js
+    templates
+    |------push
+            |------push_base.html(主页面及上传ajax js)
+
+    代码：
+        上传js代码：
+            <script>
+    $("#form_push").click(function(){
+
+        // 获取文件对像
+         var $files = $('#file')[0].files[0];
+         // 构造FormData对象
+        var formData = new FormData();
+
+        formData.append('file',$files);
+        // csrf
+        formData.append('csrfmiddlewaretoken','{{csrf_token}}')
+
+
+         // XMLHttpRequest 对象
+
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange=callback;
+
+        xhr.open("post", '/app/push/ajax_base_file', true);
+
+        // xhr.onload = function () {
+
+        //     alert("上传完成!");
+
+        // };
+        xhr.send(formData);
+        // 回调函数
+        function callback(){
+
+            if(xhr.readyState==4){
+                
+                if(xhr.status==200){   
+            //纯文本数据的接受方法   
+                    var message=xhr.responseText; 
+                    alert(message)
+                }
+            }
+        }
+        // },'JSON');
+        
+    })
+    
+</script>
+
+后台处理代码：
+
+def ajax_base_file(request):
+    if request.method == 'POST':
+        # 获取文件
+        file = request.FILES.get('file')
+        if not file:
+            return HttpResponse("文件传输失败")
+
+        # 文件名
+        # filedir =os.path.join(settings.BASE_DIR,'image')
+        # 判断目录是否存在
+
+        filedir =os.path.join(settings.BASE_DIR,'image',time.strftime("%Y"),time.strftime("%m"),time.strftime("%d"))
+
+        if not os.path.exists(filedir):
+            # 创建目录
+            os.makedirs(filedir)
+
+        # 文件
+        imagedir = os.path.join(filedir,file.name)
+
+        # 内存写入文件
+        try:
+            with open(imagedir, 'wb+') as destination:
+                for chunk in file.chunks(chunk_size=5242880):
+                    destination.write(chunk)
+        except Exception():
+            return HttpResponse("保存失败")
+        else:
+            return JsonResponse({"text":"上传成功",'name':filedir,'size':file.size})
+
+
+2：flash上传
