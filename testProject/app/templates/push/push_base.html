@@ -1,0 +1,83 @@
+{%extends 'base.html' %}
+
+{%block src_%}
+{# <script src="static/jquery.min.js" type="text/javascript"></script> #}
+{% endblock %}
+
+
+{%block title%}
+push 测试
+{%endblock%}
+
+
+{% block content%}
+<h3 style="text-align:center">原生上传文件与图片</h3 >
+<hr>
+<form id="uploadForm" name="form1" method="post" enctype="multipart/form-data" action="/app/push/ajax_base_file">
+    <input type="file" name="image" id='file'>
+    <input type="text" name="text" id='text_'>
+    <input type="button" value="提交" id="form_push"/>
+</form>
+
+<script>
+    $("#form_push").click(function(){
+
+        // 获取文件对像
+         var $files = $('#file')[0].files[0];
+         // 构造FormData对象
+        var formData = new FormData();
+
+        formData.append('file',$files);
+        // csrf
+        formData.append('csrfmiddlewaretoken','{{csrf_token}}')
+
+
+         // XMLHttpRequest 对象
+
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange=callback;
+
+        xhr.open("post", '/app/push/ajax_base_file', true);
+
+        // xhr.onload = function () {
+
+        //     alert("上传完成!");
+
+        // };
+
+        xhr.send(formData);
+
+
+
+        // 回调函数
+        function callback(){
+
+            if(xhr.readyState==4){
+                
+                if(xhr.status==200){   
+            //纯文本数据的接受方法   
+                    var message=xhr.responseText; 
+                    alert(message)
+                }
+            }
+        }
+
+        // var textval=$('#text_').val()
+        // data={"text":textval}
+        // $.post('/app/push/ajax_base_file',data,function(data){
+        //     console.log(data)
+
+        // },'JSON');
+        
+    })
+    
+</script>
+
+
+
+
+{% endblock %}
+
+
+{%block js_%}
+{%endblock%}
