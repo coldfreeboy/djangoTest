@@ -9,5 +9,7 @@ urlpatterns = [
     # 图片和文件上传
     url(r'^base/$',views.base),
     url(r'^ajax_base_file',views.ajax_base_file),
+    url(r'^ajax_base_model',views.ajax_base_model),
+    url(r'^ajax_find',views.ajax_find),
 
 ]

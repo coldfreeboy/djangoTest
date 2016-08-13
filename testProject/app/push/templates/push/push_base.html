@@ -13,11 +13,31 @@ push 测试
 {% block content%}
 <h3 style="text-align:center">原生上传文件与图片</h3 >
 <hr>
+<p>使用原生方式存储图片</p>
 <form id="uploadForm" name="form1" method="post" enctype="multipart/form-data" action="/app/push/ajax_base_file">
     <input type="file" name="image" id='file'>
     <input type="text" name="text" id='text_'>
     <input type="button" value="提交" id="form_push"/>
 </form>
+<hr>
+<p>使用model模型存储图片</p>
+<form id="uploadForm2">
+    <input type="file" name="image" id='file2'>
+    <input type="text" name="text" id='text_2'>
+    <input type="button" value="提交" id="form_push2"/>
+</form>
+
+<form action="" >
+    <input type="text" name="id" id="search">查询
+    <input type="button" value="查询" id="bt_search">
+</form>
+
+<p id="show"></p>
+
+<h3>this is push</h3>
+
+
+
 
 <br>
 <div>
@@ -77,6 +97,64 @@ push 测试
     })
     
 </script>
+
+
+<script>
+    $("#form_push2").click(function(){
+
+        // 获取文件对像
+         var $files = $('#file2')[0].files[0];
+         // 构造FormData对象
+        var formData = new FormData();
+
+        formData.append('file',$files);
+        // csrf
+        formData.append('csrfmiddlewaretoken','{{csrf_token}}')
+
+
+         // XMLHttpRequest 对象
+
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange=callback;
+
+        xhr.open("post", '/app/push/ajax_base_model', true);
+
+        xhr.send(formData);
+
+
+
+        // 回调函数
+        function callback(){
+
+            if(xhr.readyState==4){
+                
+                if(xhr.status==200){   
+            //纯文本数据的接受方法   
+                    var message=xhr.responseText; 
+                    alert(message)
+                }
+            }
+        }
+
+        
+    })
+    
+</script>
+
+<script>
+    // 查询
+    $("#bt_search").click(function(){
+        var id = $('#search').val();
+
+        var data={id:id}
+
+        $.post("/app/push/ajax_find",data,function(data){
+
+            $("#show").html(data.id);
+        },'JSON')
+    })
+</script>
+
 
 
 
