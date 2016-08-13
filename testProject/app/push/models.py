@@ -5,6 +5,10 @@ from django.db import models
 from django.core.files.storage import FileSystemStorage
 from config import settings
 import os
+from config import settings
+from PIL import Image
+from io import BytesIO
+import time
 
 # 设置存储路径
 
@@ -38,7 +42,7 @@ class myfile_obj():
         except Exception():
             return("创建失败:%s" % t)
         else:
-            self.qlist=t
+            self._qlist=t
             return t
 
     def getUrlById(self,id):
@@ -49,6 +53,29 @@ class myfile_obj():
 
     def getPicName(self):
         return self._qlist.pic.name
+
+    def thumbSave(self,**kwg):
+        imgs = kwg.pop('pic')
+
+        img = Image.open(imgs)
+        img.thumbnail((128,128),Image.ANTIALIAS) 
+
+        filedir =os.path.join(settings.BASE_DIR,'image',time.strftime("%Y"),time.strftime("%m"),time.strftime("%d"))
+
+        if not os.path.exists(filedir):
+            # 创建目录
+            os.makedirs(filedir)
+
+        # 文件
+        imagedir = os.path.join(filedir,imgs.name)
+
+        img.save(imagedir,'jpeg')
+        
+        return self
+
+
+
+
 
     
 

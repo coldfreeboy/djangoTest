@@ -53,13 +53,17 @@ def ajax_base_model(request):
         # f.save()
 
         # 自定义存储
-        f=myfile_obj().create(name = file.name, pic=file)
+        # f=myfile_obj().create(name = file.name, pic=file)
+        # 存储缩略图
+        f=myfile_obj().thumbSave(name=file.name,pic=file)
+        return HttpResponse("保存成功")
 
 
-        return HttpResponse("保存成功:%s:%s:%s" % (f.pic.path.encode('utf-8'),
-                                                   f.pic.name.encode('utf-8'),
-                                                   f.pic.url.encode('utf-8')
-            ))
+
+        # return HttpResponse("保存成功:%s:%s:%s" % (f.pic.path.encode('utf-8'),
+                                                   # f.pic.name.encode('utf-8'),
+                                                   # f.pic.url.encode('utf-8')
+            # ))
 
 def ajax_find(request):
     if not request.method=='POST':
