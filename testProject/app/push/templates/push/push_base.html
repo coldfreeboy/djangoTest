@@ -203,9 +203,53 @@ $(function() {
     
 </script>
 
+<hr>
+
+<h3>kindEditor富文本</h3>
+
+{# 副文本添加资源 #}
+<script charset="utf-8" src="/static/push/kindeditor/kindeditor-all-min.js"></script>
+<script charset="utf-8" src="/static/push/kindeditor/lang/zh-CN.js"></script>
+<div>
+
+    <form action="" id="form_kind_edit">
+        {%csrf_token%}
+        <input type="text" name="name"/>
+        <textarea name="content" id="myedit" style="width:700px;height:500px;">
+        
+        </textarea>
+
+        <input type="button" value="提交" id="bt_edit"/>
+        
+    </form>
+
+</div>
+
+<script>
+    KindEditor.ready(function(K) {
+        window.editor = K.create('#myedit',{
+            uploadJson : '/app/push/ajax_kind_edit/', //文件发送地址
+            afterBlur : function(){this.sync();}, //必须有
+            extraFileUploadParams:{'csrfmiddlewaretoken': '{{csrf_token}}'} //csrf验证
+        });
+    });
 
 
 
+    $('#bt_edit').click(function(){
+
+        // form序列化
+        var t = $('#form_kind_edit').serialize();
+
+        var url = '/app/push/ajax_edit_post/'
+        $.post(url,t,function(data){
+            console.log(data)
+        },"JSON")
+    })
+
+
+
+</script>
 
 
 <br>

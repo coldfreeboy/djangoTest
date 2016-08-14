@@ -59,8 +59,11 @@ class myfile_obj():
     def thumbSave(self,**kwg):
         # 保存成缩略图
         imgs = kwg.pop('pic')
+
+        imgs.name=os.path.splitext(imgs.name)[0]+'.jpg'
         # 缩略图制作
         img = Image.open(imgs)
+
 
         img.thumbnail((150,150),Image.ANTIALIAS) 
 
@@ -75,8 +78,14 @@ class myfile_obj():
             os.makedirs(filedir)
 
 
+
+
         # 文件保存地址
         imagedir = os.path.join(filedir,imgs.name)
+
+
+        if img.mode != "RGB":
+            img = img.convert("RGB")
         img.save(imagedir,'jpeg')
 
         # url地址

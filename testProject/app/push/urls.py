@@ -12,5 +12,7 @@ urlpatterns = [
     url(r'^ajax_base_model/$',views.ajax_base_model),
     url(r'^ajax_find/$',views.ajax_find),
     url(r'^ajax_uploadify/$',views.ajax_uploadify),
+    url(r'^ajax_kind_edit/$',views.ajax_kind_edit),
+    url(r'^ajax_edit_post/$',views.ajax_edit_post),
 
 ]
