@@ -19,6 +19,8 @@ Including another URLconf
 from django.conf.urls import url,include
 from django.contrib import admin
 from app import views
+import settings
+import django
 
 
 
@@ -30,5 +32,6 @@ urlpatterns = [
 
     url(r'^index/$',views.index),
     url(r'^app/',include('app.urls')),
+    url(r'^media/(?P<path>.*)$', django.views.static.serve, {'document_root':settings.MEDIA_ROOT})
  
 ]

@@ -2,6 +2,10 @@
 
 {%block src_%}
 {# <script src="static/jquery.min.js" type="text/javascript"></script> #}
+{# uploadify所需资源 #}
+<script src='/static/push/uploadify/jquery.uploadify.min.js'></script>
+<link rel="stylesheet" href="/static/push/uploadify/uploadify.css">
+<script></script>
 {% endblock %}
 
 
@@ -19,30 +23,6 @@ push 测试
     <input type="text" name="text" id='text_'>
     <input type="button" value="提交" id="form_push"/>
 </form>
-<hr>
-<p>使用model模型存储图片</p>
-<form id="uploadForm2">
-    <input type="file" name="image" id='file2'>
-    <input type="text" name="text" id='text_2'>
-    <input type="button" value="提交" id="form_push2"/>
-</form>
-
-<form action="" >
-    <input type="text" name="id" id="search">查询
-    <input type="button" value="查询" id="bt_search">
-</form>
-
-<p id="show"></p>
-
-<h3>this is push</h3>
-
-
-
-
-<br>
-<div>
-
-</div>
 
 <script>
     $("#form_push").click(function(){
@@ -97,7 +77,20 @@ push 测试
     })
     
 </script>
+<hr>
+<p>使用model模型存储图片</p>
+<form id="uploadForm2">
+    <input type="file" name="image" id='file2'>
+    <input type="text" name="text" id='text_2'>
+    <input type="button" value="提交" id="form_push2"/>
+</form>
 
+<form action="" >
+    <input type="text" name="id" id="search">查询
+    <input type="button" value="查询" id="bt_search">
+</form>
+
+<p id="show"></p>
 
 <script>
     $("#form_push2").click(function(){
@@ -154,6 +147,76 @@ push 测试
         },'JSON')
     })
 </script>
+
+<hr>
+<h3>uploadify文件上传插件</h3>
+
+<div>
+    
+    {# uploadify主要操作对象 #}
+    <input id="file_upload"  type="file" multiple="true" >
+    {# uploadify完成后操作对象 #}
+    {# 回显 #}
+    <img style="display:none" id="upload_org_code_img" src="" width="150" height="150">
+    {# 回头提交地址 #}
+    <input id="file_upload_image" name="thumb" type="hidden" multiple="true" value="">
+</div>
+
+<script>
+
+$(function() {
+    $('#file_upload').uploadify({
+        'swf'      : '/static/push/uploadify/uploadify.swf',
+        'uploader' : '/app/push/ajax_uploadify/',
+        'buttonText': '上传图片',
+        'fileTypeDesc': 'Image Files',
+        'fileObjName' : 'thumb',
+        //允许上传的文件后缀
+        'fileTypeExts': '*.gif; *.jpg; *.png',
+        // csrf验证 添加formdata
+        'onUploadStart' : function(file) {
+                $("#file_upload").uploadify("settings", "formData", { 'csrfmiddlewaretoken': '{{csrf_token}}'});   
+        },
+        'onUploadSuccess' : function(file,data,response) {
+            // response true ,false
+
+            // 成功后的动作
+            var obj = JSON.parse(data);
+            if(response) {
+                var obj = JSON.parse(data); //由JSON字符串转换为JSON对象
+
+                // console.log(data);
+                $('#' + file.id).find('.data').html('上传完毕');
+
+                $("#upload_org_code_img").attr("src",obj.data);
+
+                console.log(obj.data);
+
+                $("#file_upload_image").attr('value',obj.data);
+                $("#upload_org_code_img").show();
+            }else{
+                alert('上传失败');
+            }
+        },
+    });
+});
+    
+</script>
+
+
+
+
+
+
+<br>
+<div>
+
+</div>
+
+
+
+
+
 
 
 

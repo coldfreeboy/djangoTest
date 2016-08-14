@@ -80,6 +80,25 @@ def ajax_find(request):
 
     return JsonResponse({"id":s})
 
+def ajax_uploadify(request):
+    if not request.method=='POST':
+        return HttpResponse("非post")
+
+    file = request.FILES.get('thumb')
+    if(not file):
+        return HttpResponse('文件获取失败')
+
+    fdir=myfile_obj().thumbSave(name=file.name,pic=file)
+    if( not fdir):
+        return HttpResponse('保存失败')
+        
+    return JsonResponse({"data":fdir})
+
+        
+
+
+
+
 
 
 

@@ -23,6 +23,8 @@ class myfile(models.Model):
     name = models.CharField(max_length=30)
     pic = models.ImageField(upload_to="push/%Y/%m/%d",storage=fs)
 
+
+
 class myfile_obj():
     def __init__(self):
         # 把数据库初始化
@@ -55,23 +57,32 @@ class myfile_obj():
         return self._qlist.pic.name
 
     def thumbSave(self,**kwg):
+        # 保存成缩略图
         imgs = kwg.pop('pic')
-
+        # 缩略图制作
         img = Image.open(imgs)
-        img.thumbnail((128,128),Image.ANTIALIAS) 
 
-        filedir =os.path.join(settings.BASE_DIR,'image',time.strftime("%Y"),time.strftime("%m"),time.strftime("%d"))
+        img.thumbnail((150,150),Image.ANTIALIAS) 
+
+        # 构造时间路径
+        subPath = os.path.join(time.strftime("%Y"),time.strftime("%m"),time.strftime("%d"))
+
+        # 构造保存地址
+        filedir =os.path.join(settings.BASE_DIR,'image',subPath)
 
         if not os.path.exists(filedir):
             # 创建目录
             os.makedirs(filedir)
 
-        # 文件
-        imagedir = os.path.join(filedir,imgs.name)
 
+        # 文件保存地址
+        imagedir = os.path.join(filedir,imgs.name)
         img.save(imagedir,'jpeg')
+
+        # url地址
+        imgUrl = os.path.join('/media',subPath,imgs.name)
         
-        return self
+        return imgUrl
 
 
 
